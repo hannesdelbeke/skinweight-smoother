@@ -54,8 +54,16 @@ def get_skin_data():
     pass
 
 # pass to scikit for grad descent setup
+
 # for every vert calc separately
 # vtx 1 bone1 0.5*pos_function, bone2 0.1*pos_function, ...
+# after running pos function we get a new numpy array, with pos of verts.
+# multiply these pos with the skinweights. and average them.
+# compare with actual pos and calc the error
+
+# now for the optimisation part. only use 2 bones and calc deformation.
+# try variation all 4 bones with each other, lowest deformation wins!
+# bone 12 13 14 23 24 34
 
 
 def pos_function(vertex_pos, joint_pos, joint_rot, joint_scale, joint_pos_bind, joint_rot_bind, joint_scale_bind):
@@ -81,5 +89,7 @@ def pos_function(vertex_pos, joint_pos, joint_rot, joint_scale, joint_pos_bind, 
     # 1.3 / 1 = 1.3
     # scale position matrix, 1.3 size
     # 1.3 x 5 = 6.5 new_pos_scale_applied
+
+    # return new_pos x y z
 
     pass
