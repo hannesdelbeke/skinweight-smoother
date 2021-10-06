@@ -66,9 +66,8 @@ def select_verts():
         om.MGlobal.displayError("Selection must be a polygon mesh.")
         return
 
-    # return dag
     # ============================
-    skin_cluster, skin_cluster_obj = getSkinCluster() # todo
+    skin_cluster, skin_cluster_obj = getSkinCluster(dag)
     # ============================
 
     # doing this can speed up iteration and also allows you to undo all of this
@@ -76,25 +75,25 @@ def select_verts():
 
     mFnSkinCluster = omanim.MFnSkinCluster(skin_cluster_obj)
 
-    inf_objects = om.MDagPathArray()
+    influence_objects = om.MDagPathArray()
     # returns a list of the DagPaths of the joints affecting the mesh
-    mFnSkinCluster.influenceObjects(inf_objects)
-    inf_count_util = om.MScriptUtil(inf_objects.length())
+    mFnSkinCluster.influenceObjects(influence_objects)
+    influence_count_util = om.MScriptUtil(influence_objects.length())
 
     # c++ utility needed for the get/set weights functions
-    inf_count_ptr = inf_count_util.asUintPtr()
-    inf_count = inf_count_util.asInt()
+    influence_count_ptr = influence_count_util.asUintPtr()
+    influence_count = influence_count_util.asInt()
     influence_indices = om.MIntArray()
 
     # create an MIntArray that just counts from 0 to inf_count
-    for i in range(0, inf_count):
+    for i in range(0, influence_count):
       influence_indices.append(i)
 
     old_weights = om.MDoubleArray()
     # don't use the selected_components MObject we made since we want to get the weights for each vertex
     # on this mesh, not just the selected one
     empty_object = om.MObject()
-    mFnSkinCluster.getWeights(dag, empty_object, old_weights, inf_count_ptr)
+    mFnSkinCluster.getWeights(dag, empty_object, old_weights, influence_count_ptr)
 
     # new_weights just starts as a copy of old_weights
     new_weights = om.MDoubleArray(old_weights)
@@ -118,5 +117,5 @@ def select_verts():
 
     # om.MGlobal.setActiveSelectionList(original_sel)
 
-select_verts()
+# select_verts()
 
