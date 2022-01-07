@@ -3,7 +3,7 @@
 import maya.api.OpenMaya as om
 import maya.api.OpenMayaAnim as omanim
 import maya.api.OpenMayaRender as omrender
-import cmds
+#import cmds
 
 print('import code')
 
@@ -119,3 +119,32 @@ def select_verts():
 
 # select_verts()
 
+
+# copy from gltools https://github.com/bungnoid/glTools/blob/master/utils/skinCluster.py
+import maya.cmds as mc
+import maya.mel as mm
+def findRelatedSkinCluster(geometry):
+    '''
+    Return the skinCluster attached to the specified geometry
+    @param geometry: Geometry object/transform to query
+    @type geometry: str
+    '''
+    # Check geometry
+    if not mc.objExists(geometry):
+        raise Exception('Object ' + geometry + ' does not exist!')
+    # Check transform
+    if mc.objectType(geometry) == 'transform':
+        try:
+            geometry = mc.listRelatives(geometry, s=True, ni=True, pa=True)[0]
+        except:
+            raise Exception('Object ' + geometry + ' has no deformable geometry!')
+
+    # Determine skinCluster
+    skin = mm.eval('findRelatedSkinCluster "' + geometry + '"')
+    if not skin:
+        skin = mc.ls(mc.listHistory(geometry), type='skinCluster')
+        if skin: skin = skin[0]
+    if not skin: skin = ''
+
+    # Return result
+    return skin
