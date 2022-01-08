@@ -18,6 +18,8 @@ def get_data(animated_mesh_node=None, frame_count=40):
     print(skincluster)
     # skincluster(animated_mesh_node)
 
+    # skinning
+    skin_weights = get_skin_data(animated_mesh_node, skincluster)
 
     transform_data = None
     # run this on every frame (optimise run every x frames)
@@ -31,8 +33,6 @@ def get_data(animated_mesh_node=None, frame_count=40):
         # joints
         transform_data = get_joint_transforms(animated_mesh_node)
 
-        # skinning
-        get_skin_data(animated_mesh_node)
 
 
     # save this data to disk
@@ -85,8 +85,11 @@ def get_joint_transforms(mesh_node):
 
 
 
-def get_skin_data(animated_mesh_node):
-
+def get_skin_data(animated_mesh_node, skincluster):
+    # info on openmaya skincluster code https://www.artstation.com/blogs/benmorgan/72rD/maya-python-api-gettingsetting-skin-weights
+    skincluster_MObject = skin.getSkinCluster(skincluster.name()) # skincluster name to openmaya skincluster object
+    mesh_dag = skin.pynode_to_dag(animated_mesh_node)
+    joints, weights = skin.get_skin_weights(mesh_dag, skincluster_MObject)
 
 
     # get skin data for every vert.
